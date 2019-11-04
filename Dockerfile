@@ -4,7 +4,7 @@ ENV STEAMAPPNAME insurgency
 ENV STEAMAPPID 237410
 ENV STEAMAPPDIR /home/steam/ins-dedicated
 
-# 更新依赖
+# 更新依赖和添加设置
 RUN set -x \
     && sed -i 's@/deb.debian.org/@/mirrors.aliyun.com/@g;s@/security-cdn.debian.org/@/mirrors.aliyun.com/@g' /etc/apt/sources.list \
 	&& apt-get update \
@@ -15,7 +15,17 @@ RUN set -x \
 		wget \
 	&& apt-get clean autoclean \
 	&& apt-get autoremove -y \
-	&& rm -rf /var/lib/apt/lists/*
+	&& rm -rf /var/lib/apt/lists/* \
+    && su steam -c \
+        "mkdir -p ${STEAMAPPDIR} \
+		&& { \
+			echo '@ShutdownOnFailedCommand 1'; \
+			echo '@NoPromptForPassword 1'; \
+			echo 'login anonymous'; \
+			echo 'force_install_dir ${STEAMAPPDIR}'; \
+			echo 'app_update ${STEAMAPPID}'; \
+			echo 'quit'; \
+		} > ${STEAMAPPDIR}/update.txt"
 
 ENV SRCDS_FPSMAX=300 \
 	SRCDS_TICKRATE=64 \
@@ -27,17 +37,6 @@ ENV SRCDS_FPSMAX=300 \
     SRCDS_AGES=""
 
 USER steam
-
-# 添加自动更新
-RUN mkdir ${STEAMAPPDIR} \
-	&& "{ \
-		echo '@ShutdownOnFailedCommand 1'; \
-		echo '@NoPromptForPassword 1'; \
-		echo 'login anonymous'; \
-		echo 'force_install_dir ${STEAMAPPDIR}'; \
-		echo 'app_update ${STEAMAPPID}'; \
-		echo 'quit'; \
-	} > ${STEAMAPPDIR}/update.txt" 
 
 WORKDIR $STEAMAPPDIR
 
