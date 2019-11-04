@@ -9,13 +9,14 @@ ENV STEAMAPPDIR /home/steam/ins-dedicated
 # Download ESL config
 # Remove packages and tidy up
 RUN set -x \
-    && sed -i 's@/deb.debian.org/@/mirrors.aliyun.com/@g' /etc/apt/sources.list \
+    && sed -i 's@/deb.debian.org/@/mirrors.aliyun.com/@g;s@/security-cdn.debian.org/@/mirrors.aliyun.com/@g' /etc/apt/sources.list \
 	&& apt-get update \
 	&& apt-get install -y --no-install-recommends --no-install-suggests \
 		wget=1.18-5+deb9u3 \
 		ca-certificates=20161130+nmu1+deb9u1 \
 	&& su steam -c \
-		"{ \
+        mkdir ${STEAMAPPDIR} \
+		&& "{ \
 			echo '@ShutdownOnFailedCommand 1'; \
 			echo '@NoPromptForPassword 1'; \
 			echo 'login anonymous'; \
