@@ -4,26 +4,13 @@ ENV STEAMAPPNAME insurgency
 ENV STEAMAPPID 237410
 ENV STEAMAPPDIR /home/steam/ins-dedicated
 
-# Run Steamcmd and install CSGO
-# Create autoupdate config
-# Download ESL config
-# Remove packages and tidy up
+# 更新依赖
 RUN set -x \
     && sed -i 's@/deb.debian.org/@/mirrors.aliyun.com/@g;s@/security-cdn.debian.org/@/mirrors.aliyun.com/@g' /etc/apt/sources.list \
 	&& apt-get update \
 	&& apt-get install -y --no-install-recommends --no-install-suggests \
 		wget=1.18-5+deb9u3 \
 		ca-certificates=20161130+nmu1+deb9u1 \
-	&& su steam -c \
-        mkdir ${STEAMAPPDIR} \
-		&& "{ \
-			echo '@ShutdownOnFailedCommand 1'; \
-			echo '@NoPromptForPassword 1'; \
-			echo 'login anonymous'; \
-			echo 'force_install_dir ${STEAMAPPDIR}'; \
-			echo 'app_update ${STEAMAPPID}'; \
-			echo 'quit'; \
-		} > ${STEAMAPPDIR}/update.txt" \
 	&& apt-get remove --purge -y \
 		wget \
 	&& apt-get clean autoclean \
@@ -40,6 +27,17 @@ ENV SRCDS_FPSMAX=300 \
     SRCDS_AGES=""
 
 USER steam
+
+# 添加自动更新
+RUN mkdir ${STEAMAPPDIR} \
+	&& "{ \
+		echo '@ShutdownOnFailedCommand 1'; \
+		echo '@NoPromptForPassword 1'; \
+		echo 'login anonymous'; \
+		echo 'force_install_dir ${STEAMAPPDIR}'; \
+		echo 'app_update ${STEAMAPPID}'; \
+		echo 'quit'; \
+	} > ${STEAMAPPDIR}/update.txt" 
 
 WORKDIR $STEAMAPPDIR
 
