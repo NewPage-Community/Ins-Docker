@@ -19,8 +19,7 @@ RUN set -x \
 	&& apt-get clean autoclean \
 	&& apt-get autoremove -y \
 	&& rm -rf /var/lib/apt/lists/* \
-	&& su steam -c "ln -s ${STEAMCMDDIR}/steamcmd.sh ${STEAMCMDDIR}/steam.sh \
-		&& ln -s ${STEAMCMDDIR}/linux32/steamclient.so ~/.steam/sdk32/steamclient.so"
+	&& su steam -c "ln -s ${STEAMCMDDIR}/steamcmd.sh ${STEAMCMDDIR}/steam.sh"
 
 ENV SRCDS_FPSMAX=300 \
 	SRCDS_TICKRATE=64 \
@@ -48,6 +47,7 @@ ENTRYPOINT chown -R steam:steam ${STEAMAPPDIR} \
 			echo 'app_update ${STEAMAPPID}'; \
 			echo 'quit'; \
 		} > ${STEAMAPPDIR}/update.txt \
+		&& ln -s ${STEAMCMDDIR}/linux32/steamclient.so ~/.steam/sdk32/steamclient.so \
 		&& ${STEAMAPPDIR}/srcds_run \
 			-game ${STEAMAPPNAME} -console -autoupdate -steam_dir ${STEAMCMDDIR} -steamcmd_script ${STEAMAPPDIR}/update.txt -usercon +fps_max 	$SRCDS_FPSMAX \
 			-tickrate $SRCDS_TICKRATE -port $SRCDS_PORT -maxplayers_override $SRCDS_MAXPLAYERS \
