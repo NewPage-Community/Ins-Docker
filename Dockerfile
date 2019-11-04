@@ -18,6 +18,7 @@ RUN set -x \
 	&& rm -rf /var/lib/apt/lists/* \
     && su steam -c \
         "mkdir -p ${STEAMAPPDIR} \
+        && chown -R steam:steam ${STEAMAPPDIR} \
 		&& { \
 			echo '@ShutdownOnFailedCommand 1'; \
 			echo '@NoPromptForPassword 1'; \
@@ -33,7 +34,7 @@ ENV SRCDS_FPSMAX=300 \
 	SRCDS_MAXPLAYERS=49 \
 	SRCDS_PW="" \
 	SRCDS_STARTMAP="buhriz_coop checkpoint" \
-	SRCDS_REGION=3 \
+	SRCDS_REGION=4 \
     SRCDS_AGES=""
 
 USER steam
