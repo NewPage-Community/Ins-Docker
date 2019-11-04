@@ -30,10 +30,8 @@ WORKDIR $STEAMAPPDIR
 
 VOLUME $STEAMAPPDIR
 
-# Set Entrypoint:
-# 1. Update server
-# 2. Start server
-ENTRYPOINT chown -R steam ${STEAMAPPDIR} \
+# 设置权限、自动更新并启动服务器
+ENTRYPOINT chown -R steam:steam ${STEAMAPPDIR} \
 	&& su steam -c \
 		"${STEAMCMDDIR}/steamcmd.sh \
 		+login anonymous +force_install_dir ${STEAMAPPDIR} +app_update ${STEAMAPPID} +quit \
@@ -50,5 +48,5 @@ ENTRYPOINT chown -R steam ${STEAMAPPDIR} \
 			-tickrate $SRCDS_TICKRATE -port $SRCDS_PORT -maxplayers_override $SRCDS_MAXPLAYERS \
 			+map $SRCDS_STARTMAP +sv_password $SRCDS_PW +sv_region $SRCDS_REGION"
 
-# Expose ports
+# 暴露端口
 EXPOSE 27015 27020 27005 51840
