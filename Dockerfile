@@ -19,7 +19,8 @@ RUN set -x \
 	&& apt-get clean autoclean \
 	&& apt-get autoremove -y \
 	&& rm -rf /var/lib/apt/lists/* \
-	&& su steam -c "ln -s ${STEAMCMDDIR}/steamcmd.sh ${STEAMCMDDIR}/steam.sh"
+	&& su steam -c "ln -s ${STEAMCMDDIR}/steamcmd.sh ${STEAMCMDDIR}/steam.sh \
+		&& ln -s ${STEAMCMDDIR}/linux32/steamclient.so ~/.steam/sdk32/steamclient.so"
 
 ENV SRCDS_FPSMAX=300 \
 	SRCDS_TICKRATE=64 \
