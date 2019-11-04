@@ -47,6 +47,7 @@ ENTRYPOINT chown -R steam:steam ${STEAMAPPDIR} \
 			echo 'app_update ${STEAMAPPID}'; \
 			echo 'quit'; \
 		} > ${STEAMAPPDIR}/update.txt \
+		&& mkdir -p ~/.steam/sdk32 \
 		&& ln -s ${STEAMCMDDIR}/linux32/steamclient.so ~/.steam/sdk32/steamclient.so \
 		&& ${STEAMAPPDIR}/srcds_run \
 			-game ${STEAMAPPNAME} -console -autoupdate -steam_dir ${STEAMCMDDIR} -steamcmd_script ${STEAMAPPDIR}/update.txt -usercon +fps_max 	$SRCDS_FPSMAX \
