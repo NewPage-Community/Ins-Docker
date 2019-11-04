@@ -11,6 +11,7 @@ RUN set -x \
 	&& apt-get install -y --no-install-recommends --no-install-suggests \
 		wget=1.18-5+deb9u3 \
 		ca-certificates=20161130+nmu1+deb9u1 \
+		lib32z1 \
 	&& apt-get remove --purge -y \
 		wget \
 	&& apt-get clean autoclean \
