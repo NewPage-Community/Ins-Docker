@@ -5,8 +5,9 @@ ENV STEAMAPPID 237410
 ENV STEAMAPPDIR /home/steam/ins-dedicated
 
 # 更新依赖和添加设置
+# 修复scrds的自动更新问题 steamcmd.sh -> steam.sh
 RUN set -x \
-	&& sed -i 's@/deb.debian.org/@/mirrors.aliyun.com/@g;s@/security-cdn.debian.org/@/mirrors.aliyun.com/@g' /etc/apt/sources.list \
+	&& sed -i 's@/deb.debian.org/@/mirrors.aliyun.com/@g;s@/security.debian.org/@/mirrors.aliyun.com/@g' /etc/apt/sources.list \
 	&& apt-get update \
 	&& apt-get install -y --no-install-recommends --no-install-suggests \
 		wget=1.18-5+deb9u3 \
@@ -16,7 +17,8 @@ RUN set -x \
 		wget \
 	&& apt-get clean autoclean \
 	&& apt-get autoremove -y \
-	&& rm -rf /var/lib/apt/lists/* 
+	&& rm -rf /var/lib/apt/lists/* \
+	&& su steam -c cp ${STEAMCMDDIR}/steamcmd.sh ${STEAMCMDDIR}/steam.sh
 
 ENV SRCDS_FPSMAX=300 \
 	SRCDS_TICKRATE=64 \
