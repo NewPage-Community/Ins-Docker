@@ -18,7 +18,7 @@ RUN set -x \
 	&& apt-get clean autoclean \
 	&& apt-get autoremove -y \
 	&& rm -rf /var/lib/apt/lists/* \
-	&& su steam -c cp ${STEAMCMDDIR}/steamcmd.sh ${STEAMCMDDIR}/steam.sh
+	&& su steam -c "cp ${STEAMCMDDIR}/steamcmd.sh ${STEAMCMDDIR}/steam.sh"
 
 ENV SRCDS_FPSMAX=300 \
 	SRCDS_TICKRATE=64 \
