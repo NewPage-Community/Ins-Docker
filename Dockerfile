@@ -13,12 +13,13 @@ RUN set -x \
 		wget=1.18-5+deb9u3 \
 		ca-certificates=20161130+nmu1+deb9u1 \
 		lib32z1 \
+		libc6-i386 \
 	&& apt-get remove --purge -y \
 		wget \
 	&& apt-get clean autoclean \
 	&& apt-get autoremove -y \
 	&& rm -rf /var/lib/apt/lists/* \
-	&& su steam -c "cp ${STEAMCMDDIR}/steamcmd.sh ${STEAMCMDDIR}/steam.sh"
+	&& su steam -c "ln -s ${STEAMCMDDIR}/steamcmd.sh ${STEAMCMDDIR}/steam.sh"
 
 ENV SRCDS_FPSMAX=300 \
 	SRCDS_TICKRATE=64 \
