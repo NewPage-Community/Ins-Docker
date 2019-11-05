@@ -1,5 +1,6 @@
-FROM cm2network/steamcmd:root
+FROM debian:stretch-slim
 
+ENV STEAMCMDDIR /home/steam/steamcmd
 ENV STEAMAPPNAME insurgency
 ENV STEAMAPPID 237410
 ENV STEAMAPPDIR /home/steam/ins-dedicated
@@ -10,16 +11,23 @@ RUN set -x \
 	&& sed -i 's@/deb.debian.org/@/mirrors.aliyun.com/@g;s@/security.debian.org/@/mirrors.aliyun.com/@g' /etc/apt/sources.list \
 	&& apt-get update \
 	&& apt-get install -y --no-install-recommends --no-install-suggests \
+		lib32stdc++6=6.3.0-18+deb9u1\
+		lib32gcc1=1:6.3.0-18+deb9u1 \
 		wget=1.18-5+deb9u3 \
 		ca-certificates=20161130+nmu1+deb9u1 \
 		lib32z1 \
 		gdb \
+	&& useradd -m steam \
+	&& su steam -c \
+		"mkdir -p ${STEAMCMDDIR} \
+		&& cd ${STEAMCMDDIR} \
+		&& wget -qO- 'https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz' | tar zxf - \
+		&& ${STEAMCMDDIR}/steamcmd.sh +login anonymous +quit " \
 	&& apt-get remove --purge -y \
 		wget \
 	&& apt-get clean autoclean \
 	&& apt-get autoremove -y \
-	&& rm -rf /var/lib/apt/lists/* \
-	&& su steam -c "ln -s ${STEAMCMDDIR}/steamcmd.sh ${STEAMCMDDIR}/steam.sh"
+	&& rm -rf /var/lib/apt/lists/* 
 
 ENV SRCDS_FPSMAX=300 \
 	SRCDS_TICKRATE=64 \
@@ -27,7 +35,6 @@ ENV SRCDS_FPSMAX=300 \
 	SRCDS_MAXPLAYERS=49 \
 	SRCDS_PW="" \
 	SRCDS_STARTMAP="buhriz_coop checkpoint" \
-	SRCDS_REGION=4 \
 	SRCDS_ARGS=""
 
 WORKDIR $STEAMAPPDIR
@@ -49,10 +56,10 @@ ENTRYPOINT chown -R steam:steam ${STEAMAPPDIR} \
 		} > ${STEAMAPPDIR}/update.txt \
 		&& mkdir -p ~/.steam/sdk32 \
 		&& ln -s ${STEAMCMDDIR}/linux32/steamclient.so ~/.steam/sdk32/steamclient.so \
-		&& ${STEAMAPPDIR}/srcds_run \
+		&& ${STEAMAPPDIR}/srcds_linux \
 			-game ${STEAMAPPNAME} -console -autoupdate -steam_dir ${STEAMCMDDIR} -steamcmd_script ${STEAMAPPDIR}/update.txt -usercon +fps_max 	$SRCDS_FPSMAX \
-			-tickrate $SRCDS_TICKRATE -port $SRCDS_PORT -maxplayers_override $SRCDS_MAXPLAYERS \
-			+map $SRCDS_STARTMAP +sv_password $SRCDS_PW +sv_region $SRCDS_REGION \
+			-tickrate $SRCDS_TICKRATE -port $SRCDS_PORT -maxplayers $SRCDS_MAXPLAYERS \
+			+map $SRCDS_STARTMAP +sv_password $SRCDS_PW \
 			$SRCDS_ARGS"
 
 # 暴露端口
