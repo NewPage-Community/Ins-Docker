@@ -17,10 +17,13 @@ RUN set -x \
 	&& sed -i 's@/deb.debian.org/@/mirrors.aliyun.com/@g;s@/security.debian.org/@/mirrors.aliyun.com/@g' /etc/apt/sources.list \
 	&& apt-get update \
 	&& apt-get install -y --no-install-recommends --no-install-suggests \
-		lib32stdc++6=6.3.0-18+deb9u1\
-		lib32gcc1=1:6.3.0-18+deb9u1 \
-		wget=1.18-5+deb9u3 \
-		ca-certificates=20161130+nmu1+deb9u1 \
+		lib32stdc++6 \
+		libstdc++6 \
+		libstdc++6:i386 \
+		libcurl4-gnutls-dev:i386 \
+		lib32gcc1 \
+		wget \
+		ca-certificates \
 		lib32z1 \
 		gdb \
 	&& useradd -m steam \
