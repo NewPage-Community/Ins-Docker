@@ -1,9 +1,16 @@
 FROM debian:stretch-slim
 
-ENV STEAMCMDDIR /home/steam/steamcmd
-ENV STEAMAPPNAME insurgency
-ENV STEAMAPPID 237410
-ENV STEAMAPPDIR /home/steam/ins-dedicated
+ENV STEAMCMDDIR /home/steam/steamcmd \
+	STEAMAPPNAME insurgency \
+	STEAMAPPID 237410 \
+	STEAMAPPDIR /home/steam/ins-dedicated \
+	SRCDS_FPSMAX=300 \
+	SRCDS_TICKRATE=64 \
+	SRCDS_PORT=27015 \
+	SRCDS_MAXPLAYERS=49 \
+	SRCDS_PW="" \
+	SRCDS_STARTMAP="buhriz_coop checkpoint" \
+	SRCDS_ARGS=""
 
 # 更新依赖和添加设置
 RUN set -x \
@@ -27,14 +34,6 @@ RUN set -x \
 	&& apt-get clean autoclean \
 	&& apt-get autoremove -y \
 	&& rm -rf /var/lib/apt/lists/* 
-
-ENV SRCDS_FPSMAX=300 \
-	SRCDS_TICKRATE=64 \
-	SRCDS_PORT=27015 \
-	SRCDS_MAXPLAYERS=49 \
-	SRCDS_PW="" \
-	SRCDS_STARTMAP="buhriz_coop checkpoint" \
-	SRCDS_ARGS=""
 
 WORKDIR $STEAMAPPDIR
 
