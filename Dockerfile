@@ -6,7 +6,6 @@ ENV STEAMAPPID 237410
 ENV STEAMAPPDIR /home/steam/ins-dedicated
 
 # 更新依赖和添加设置
-# 修复scrds的自动更新问题 steamcmd.sh -> steam.sh
 RUN set -x \
 	&& sed -i 's@/deb.debian.org/@/mirrors.aliyun.com/@g;s@/security.debian.org/@/mirrors.aliyun.com/@g' /etc/apt/sources.list \
 	&& apt-get update \
@@ -56,8 +55,9 @@ ENTRYPOINT chown -R steam:steam ${STEAMAPPDIR} \
 		} > ${STEAMAPPDIR}/update.txt \
 		&& mkdir -p ~/.steam/sdk32 \
 		&& ln -s ${STEAMCMDDIR}/linux32/steamclient.so ~/.steam/sdk32/steamclient.so \
-		&& ${STEAMAPPDIR}/srcds_linux \
-			-game ${STEAMAPPNAME} -console -autoupdate -steam_dir ${STEAMCMDDIR} -steamcmd_script ${STEAMAPPDIR}/update.txt -usercon +fps_max 	$SRCDS_FPSMAX \
+		&& sed -i 's@/steam.sh/@/steamcmd.sh/@g' ${STEAMAPPDIR}/srcds_run \
+		&& ${STEAMAPPDIR}/srcds_run \
+			-game ${STEAMAPPNAME} -console -autoupdate -steam_dir ${STEAMCMDDIR} -steamcmd_script ${STEAMAPPDIR}/update.txt -usercon +fps_max 	$SRCDS_FPSMAX -pidfile srcds.pid -debug \
 			-tickrate $SRCDS_TICKRATE -port $SRCDS_PORT -maxplayers $SRCDS_MAXPLAYERS \
 			+map $SRCDS_STARTMAP +sv_password $SRCDS_PW \
 			$SRCDS_ARGS"
