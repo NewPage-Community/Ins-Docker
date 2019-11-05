@@ -1,9 +1,9 @@
 FROM debian:stretch-slim
 
-ENV STEAMCMDDIR /home/steam/steamcmd \
-	STEAMAPPNAME insurgency \
-	STEAMAPPID 237410 \
-	STEAMAPPDIR /home/steam/ins-dedicated \
+ENV STEAMCMDDIR="/home/steam/steamcmd" \
+	STEAMAPPNAME="insurgency" \
+	STEAMAPPID=237410 \
+	STEAMAPPDIR="/home/steam/ins-dedicated" \
 	SRCDS_FPSMAX=300 \
 	SRCDS_TICKRATE=64 \
 	SRCDS_PORT=27015 \
