@@ -16,6 +16,7 @@ ENV STEAMCMDDIR="/home/steam/steamcmd" \
 RUN set -x \
 	&& sed -i 's@/deb.debian.org/@/mirrors.aliyun.com/@g;s@/security.debian.org/@/mirrors.aliyun.com/@g' /etc/apt/sources.list \
 	&& apt-get update \
+	&& dpkg --add-architecture i386 \
 	&& apt-get install -y --no-install-recommends --no-install-suggests \
 		lib32stdc++6 \
 		libstdc++6 \
