@@ -1,9 +1,9 @@
 FROM debian:stretch-slim
 
-ENV STEAMCMDDIR /home/steam/steamcmd \
-	STEAMAPPNAME insurgency \
-	STEAMAPPID 237410 \
-	STEAMAPPDIR /home/steam/ins-dedicated \
+ENV STEAMCMDDIR="/home/steam/steamcmd" \
+	STEAMAPPNAME="insurgency" \
+	STEAMAPPID=237410 \
+	STEAMAPPDIR="/home/steam/ins-dedicated" \
 	SRCDS_FPSMAX=300 \
 	SRCDS_TICKRATE=64 \
 	SRCDS_PORT=27015 \
@@ -16,12 +16,9 @@ ENV STEAMCMDDIR /home/steam/steamcmd \
 RUN set -x \
 	&& sed -i 's@/deb.debian.org/@/mirrors.aliyun.com/@g;s@/security.debian.org/@/mirrors.aliyun.com/@g' /etc/apt/sources.list \
 	&& apt-get update \
-	&& dpkg --add-architecture i386 \
 	&& apt-get install -y --no-install-recommends --no-install-suggests \
 		lib32stdc++6 \
 		libstdc++6 \
-		libstdc++6:i386 \
-		libcurl4-gnutls-dev:i386 \
 		lib32gcc1 \
 		wget \
 		ca-certificates \
