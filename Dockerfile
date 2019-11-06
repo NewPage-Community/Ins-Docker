@@ -21,6 +21,7 @@ RUN set -x \
 		gcc-multilib \
 		wget \
 		ca-certificates \
+		lib32z1 \
 	&& useradd -m steam \
 	&& su steam -c \
 		"mkdir -p ${STEAMCMDDIR} \
