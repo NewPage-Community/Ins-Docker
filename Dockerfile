@@ -19,6 +19,7 @@ RUN set -x \
 	&& apt-get install -y --no-install-recommends --no-install-suggests \
 		lib32stdc++6 \
 		gcc-multilib \
+		g++-multilib \
 		wget \
 		ca-certificates \
 		lib32z1 \
