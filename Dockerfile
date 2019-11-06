@@ -18,12 +18,9 @@ RUN set -x \
 	&& apt-get update \
 	&& apt-get install -y --no-install-recommends --no-install-suggests \
 		lib32stdc++6 \
-		libstdc++6 \
-		lib32gcc1 \
+		gcc-multilib \
 		wget \
 		ca-certificates \
-		lib32z1 \
-		gdb \
 	&& useradd -m steam \
 	&& su steam -c \
 		"mkdir -p ${STEAMCMDDIR} \
