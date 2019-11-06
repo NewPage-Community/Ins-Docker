@@ -18,7 +18,6 @@ RUN set -x \
 	&& apt-get update \
 	&& apt-get install -y --no-install-recommends --no-install-suggests \
 		lib32stdc++6 \
-		gcc-multilib \
 		g++-multilib \
 		wget \
 		ca-certificates \
