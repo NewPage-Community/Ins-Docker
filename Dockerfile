@@ -57,7 +57,8 @@ ENTRYPOINT chown -R steam:steam ${STEAMAPPDIR} \
 		&& sed -i 's@/steam.sh/@/steamcmd.sh/@g' ${STEAMAPPDIR}/srcds_run \
 		&& rm -f ${STEAMAPPDIR}/bin/libstdc++.so.6 \
 		&& ${STEAMAPPDIR}/srcds_run \
-			-game ${STEAMAPPNAME} -console -autoupdate -steam_dir ${STEAMCMDDIR} -steamcmd_script ${STEAMAPPDIR}/update.txt -usercon +fps_max 	$SRCDS_FPSMAX -pidfile srcds.pid -debug \
+			-game ${STEAMAPPNAME} -console -autoupdate -steam_dir ${STEAMCMDDIR} -steamcmd_script ${STEAMAPPDIR}/update.txt \
+			-usercon +fps_max 	$SRCDS_FPSMAX -pidfile srcds.pid -debug -nowatchdog \
 			-tickrate $SRCDS_TICKRATE -port $SRCDS_PORT -maxplayers $SRCDS_MAXPLAYERS \
 			+map $SRCDS_STARTMAP +sv_password $SRCDS_PW \
 			$SRCDS_ARGS"
