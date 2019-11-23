@@ -31,7 +31,8 @@ RUN set -x \
 		&& ${STEAMCMDDIR}/steamcmd.sh +login anonymous +quit " \
 	&& apt-get clean autoclean \
 	&& apt-get autoremove -y \
-	&& rm -rf /var/lib/apt/lists/* 
+	&& rm -rf /var/lib/apt/lists/* \
+	&& ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 
 WORKDIR $STEAMAPPDIR
 
