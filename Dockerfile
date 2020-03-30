@@ -1,10 +1,9 @@
-FROM debian:stretch-slim
+FROM harbor.new-page.xyz/newpage/steamcmd:latest
 
-ENV STEAMCMDDIR="/home/steam/steamcmd" \
-	STEAMAPPNAME="insurgency" \
-	STEAMAPPID=237410 \
-	STEAMAPPDIR="/home/steam/ins-dedicated" \
-	SRCDS_FPSMAX=300 \
+ENV STEAMAPPNAME="insurgency" \
+	STEAMAPPID=237410
+
+ENV	SRCDS_FPSMAX=300 \
 	SRCDS_TICKRATE=64 \
 	SRCDS_PORT=27015 \
 	SRCDS_MAXPLAYERS=49 \
@@ -12,55 +11,15 @@ ENV STEAMCMDDIR="/home/steam/steamcmd" \
 	SRCDS_STARTMAP="buhriz_coop checkpoint" \
 	SRCDS_ARGS=""
 
-# 更新依赖和添加设置
+COPY *.sh /usr/local/bin/
+
 RUN set -x \
-	&& sed -i 's@/deb.debian.org/@/mirrors.aliyun.com/@g;s@/security.debian.org/@/mirrors.aliyun.com/@g' /etc/apt/sources.list \
-	&& apt-get update \
-	&& apt-get install -y --no-install-recommends --no-install-suggests \
-		lib32stdc++6 \
-		g++-multilib \
-		wget \
-		ca-certificates \
-		lib32z1 \
-		gdb \
-	&& useradd -m steam \
-	&& su steam -c \
-		"mkdir -p ${STEAMCMDDIR} \
-		&& cd ${STEAMCMDDIR} \
-		&& wget -qO- 'https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz' | tar zxf - \
-		&& ${STEAMCMDDIR}/steamcmd.sh +login anonymous +quit " \
-	&& apt-get clean autoclean \
-	&& apt-get autoremove -y \
-	&& rm -rf /var/lib/apt/lists/* \
-	&& ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+	&& chmod 755 /usr/local/bin/*.sh
 
 WORKDIR $STEAMAPPDIR
 
 VOLUME $STEAMAPPDIR
 
-# 设置权限、自动更新并启动服务器
-ENTRYPOINT chown -R steam:steam ${STEAMAPPDIR} \
-	&& su steam -c \
-		"${STEAMCMDDIR}/steamcmd.sh \
-		+login anonymous +force_install_dir ${STEAMAPPDIR} +app_update ${STEAMAPPID} +quit \
-		&& { \
-			echo '@ShutdownOnFailedCommand 1'; \
-			echo '@NoPromptForPassword 1'; \
-			echo 'login anonymous'; \
-			echo 'force_install_dir ${STEAMAPPDIR}'; \
-			echo 'app_update ${STEAMAPPID}'; \
-			echo 'quit'; \
-		} > ${STEAMAPPDIR}/update.txt \
-		&& mkdir -p ~/.steam/sdk32 \
-		&& ln -s ${STEAMCMDDIR}/linux32/steamclient.so ~/.steam/sdk32/steamclient.so \
-		&& sed -i 's@/steam.sh/@/steamcmd.sh/@g' ${STEAMAPPDIR}/srcds_run \
-		&& rm -f ${STEAMAPPDIR}/bin/libstdc++.so.6 \
-		&& ${STEAMAPPDIR}/srcds_run \
-			-game ${STEAMAPPNAME} -console -autoupdate -steam_dir ${STEAMCMDDIR} -steamcmd_script ${STEAMAPPDIR}/update.txt \
-			-usercon +fps_max 	$SRCDS_FPSMAX -pidfile srcds.pid -debug -nowatchdog \
-			-tickrate $SRCDS_TICKRATE -port $SRCDS_PORT -maxplayers $SRCDS_MAXPLAYERS \
-			+map $SRCDS_STARTMAP +sv_password $SRCDS_PW \
-			$SRCDS_ARGS"
+ENTRYPOINT initserver.sh
 
-# 暴露端口
-EXPOSE 27015 27020 27005 51840
+EXPOSE 27015/tcp 27015/udp 27020/udp
