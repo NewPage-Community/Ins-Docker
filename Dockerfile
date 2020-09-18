@@ -1,4 +1,4 @@
-FROM harbor.new-page.xyz/newpage/steamcmd:latest
+FROM registry.new-page.xyz/newpage/steamcmd:latest
 
 ENV STEAMAPPNAME="insurgency" \
 	STEAMAPPID=237410
